@@ -5,6 +5,7 @@ var //gameboard
     tr,
     td,
     fragment = document.createDocumentFragment(),
+	losingScreen = document.getElementById("lost"),
     //arrow keys
 	upKey = 38,
     downKey = 40,
@@ -27,7 +28,10 @@ var //gameboard
 	fastSpeed = document.getElementById("fastSpeed"),
 	scoreBoard = document.getElementById("score"),
 	highScore = 0,
-	highScoreBoard = document.getElementById("highScore");
+	highScoreBoard = document.getElementById("highScore"),
+	//movement
+ 	movementLoop,
+	lastKey;
 
 slowSpeed.addEventListener("click", function(){speed = 500; slowSpeed.className="selected"; normalSpeed.removeAttribute("class", "selected"); fastSpeed.removeAttribute("class", "selected");})
 normalSpeed.addEventListener("click", function(){speed = 300; normalSpeed.className="selected"; slowSpeed.removeAttribute("class", "selected"); fastSpeed.removeAttribute("class", "selected");})
@@ -39,15 +43,29 @@ function randomTile(){
 
 
 function gameLost(){
-	alert("Lost!");
+	clearInterval(movementLoop);
+	
+	losingScreen.innerHTML = "<h3>GAME OVER</h3>";
+	losingScreen.className = "show";
+	var p = document.createElement("p");
+	p.innerHTML = "Score: " + score;
+	
 	if(score > highScore){
+		p.innerHTML += "<br><strong>New highscore!</strong>";
 		highScore = score;
 		highScoreBoard.innerHTML = "Highscore: " + highScore;
 	}
-	gameStart();
+	//p.innerHTML += "</p><p class='instructions'>Press any key to continue.";
+	losingScreen.appendChild(p);
+	document.onkeydown = function(event){
+		gameStart();
+	}
 }
 
 function gameStart(){
+	losingScreen.className = "hide";
+	losingScreen.innerHTML = "";
+	lastKey = "";
 	clearInterval(movementLoop); //stops movement
 	//sets speed
 	
@@ -71,7 +89,38 @@ currentPosition = startingPosition;
 	apple = apple && apple.removeAttribute("class", "apple");
 //establish points
 apple = document.getElementById(randomTile());
+while(apple.getAttribute("id") === currentPosition || apple.getAttribute("class") === "snakeHead"){ //makes sure that the apple doesn't appear
+			apple = document.getElementById(randomTile());}																									  //where the snake currently is
+
 apple.setAttribute("class", "apple");
+	
+document.onkeydown = function(event){
+	clearInterval(movementLoop); //remove previous movement
+   //MOVE UP
+   if(event.keyCode === upKey) {
+	   lastKey = "up";
+       move(lastKey);
+   }
+   //MOVE DOWN
+   else if(event.keyCode === downKey){
+	   lastKey = "down";
+	   move(lastKey);
+   }
+   //MOVE LEFT
+   else if(event.keyCode === leftKey){
+	   lastKey = "left";
+	    move(lastKey);
+   }
+   //MOVE RIGHT
+   else if(event.keyCode === rightKey){
+	   lastKey = "right";
+	    move(lastKey);
+   }
+	else{
+		move(lastKey);
+	}
+};
+
 
 }
 
@@ -106,7 +155,7 @@ function checkDirection(moveCondition, calculation){
 		  
 		 //picking up an apple
 		 if(currentPosition === apple.getAttribute("id")){ //if you come across a tile with an apple
-				if(speed > 300){score += 0.5;}			 							 //score increase at slow
+				if(speed > 300){score += 0.5;}			 							 //score increase at slow speed
 				else if(speed > 200){score ++;}			 							 //score increase at normal speed
 				else{score += 2;}			 							 			//score increase at fast speed
 			 	tail++;											//tail size increases
@@ -128,9 +177,37 @@ function checkDirection(moveCondition, calculation){
 	//if you hit the edge
 	else{
 		gameLost();
-		}
+	}
 
 }
+
+function move(key){
+	if(key == "up"){
+		movementLoop = setInterval(function(){
+		   			  checkDirection((parseInt(currentPosition[0]) > 0), 
+					  ((parseInt(currentPosition[0]) - 1) + "" + parseInt(currentPosition[1])))},
+					  speed);
+	}
+	else if( key == "down"){
+		movementLoop = setInterval(function(){
+       				 checkDirection((parseInt(currentPosition[0]) < (rows - 1)),
+					 ((parseInt(currentPosition[0]) + 1) + "" + parseInt(currentPosition[1])))},
+					 speed);
+		}
+	else if(key == "left"){
+	   movementLoop = setInterval(function(){
+		   			  checkDirection((parseInt(currentPosition[1]) > 0),
+					  (parseInt(currentPosition[0]) + "" + (parseInt(currentPosition[1]) - 1)))},
+					  speed);
+		}
+	else if(key == "right"){
+		movementLoop = setInterval(function (){
+	  					checkDirection(((parseInt(currentPosition[1]) < (columns - 1))),
+						(parseInt(currentPosition[0]) + "" + (parseInt(currentPosition[1]) + 1)))},
+						speed);
+		}	
+}
+
 
 //create playing field, assign id to every td
 for(var i = 0; i < rows; i++){
@@ -145,39 +222,3 @@ for(var i = 0; i < rows; i++){
 playField.appendChild(fragment);
 
 gameStart();
-//movement
-var movementLoop;
-document.onkeydown = function(event){
-	clearInterval(movementLoop); //remove previous movement
-   //MOVE UP
-   if(event.keyCode === upKey) {
-       movementLoop = setInterval(function(){
-		   			  checkDirection((parseInt(currentPosition[0]) > 0), 
-					  ((parseInt(currentPosition[0]) - 1) + "" + parseInt(currentPosition[1])))},
-					  speed);
-	   //characterImage("up");
-   }
-   //MOVE DOWN
-   else if(event.keyCode === downKey){
-	   movementLoop = setInterval(function(){
-       checkDirection((parseInt(currentPosition[0]) < (rows - 1)),
-					 ((parseInt(currentPosition[0]) + 1) + "" + parseInt(currentPosition[1])))},
-					 speed);
-   }
-   //MOVE LEFT
-   else if(event.keyCode === leftKey){
-	   movementLoop = setInterval(function(){
-	   checkDirection((parseInt(currentPosition[1]) > 0),
-					  (parseInt(currentPosition[0]) + "" + (parseInt(currentPosition[1]) - 1)))},
-					  speed);
-	   //characterImage("left");
-   }
-   //MOVE RIGHT
-   else if(event.keyCode === rightKey){
-	   movementLoop = setInterval(function (){
-	  	checkDirection(((parseInt(currentPosition[1]) < (columns - 1))),
-						(parseInt(currentPosition[0]) + "" + (parseInt(currentPosition[1]) + 1)))},
-						speed);
-	   //characterImage("right");
-   }
-};

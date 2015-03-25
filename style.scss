@@ -1,0 +1,53 @@
+$tdSize : 50;
+body{
+	text-align:center;
+	font-family: sans-serif;
+}
+
+h2{
+	display:inline;
+}
+
+ul{
+	margin:0;
+	padding:0;
+	list-style:none;
+	
+	.selected{
+		font-weight:bold;
+	}
+	
+	li{
+		display:inline;
+		
+		&:hover{
+			color:red;
+		}
+	}
+}
+
+#playField{
+  margin: 0 auto;
+  border: 1px solid black;
+  border-spacing: 0;
+
+   td{
+     width: $tdSize + px;
+     height: $tdSize + px;
+     border: 1px dotted black;
+     padding: 0;
+     margin: 0;
+   }
+}
+
+.snakeHead {
+  background-color: #217d23;
+}
+
+.snakeBody {
+  background-color: #113a12;
+}
+
+.apple {
+  background-color: #be1024;
+}

@@ -1,5 +1,6 @@
 $tdSize : 27;
 body{
+    margin: 0;
 	text-align:center;
 	font-family: sans-serif;
 	font-size: 16px;
@@ -9,9 +10,17 @@ body{
 	background-position: top;
 }
 
+.unplayable{
+  position: fixed;
+  background: rgba(255,255,255,0.8);
+  width: 100%;
+  @media(min-width: 750px){
+    display: none;
+  }
+}
 
 h2{
-	display:inline;
+    margin-top: 10px;
 	color: #4e4e4e;
 }
 
@@ -54,29 +63,47 @@ ul{
 	margin:0;
 	padding:0;
 	list-style:none;
-	
-	.selected{
-		font-weight:bold;
-	}
-	
+  
+    li{
+      cursor: pointer;
+      color: #4a4a4a;
+      
+	   &:hover{
+	   	 color:red;
+	   }
+      
+      &.selected{
+          font-weight:bold;
+          cursor: default;
+          &:hover{
+            color: #4a4a4a;
+          }
+      }
+    }
+  
 	#normalSpeed{
 		margin: 50px 0 22px 0;
 		font-size: 20px;
 	}
 	
 	#slowSpeed, #fastSpeed{
-		display:inline;
-		margin: 0px 50px;
-		
-		&:hover{
-			color:red;
-		}
+		margin: 5px 50px;
+		display:inline-block;
 	}
+	#slowSpeed{
+		display:inline-block;
+        transform: rotate(30deg);
+	}
+	#fastSpeed{
+		display:inline-block;
+        transform: rotate(-30deg);
+	}	
+  
 	
 }
 
 #playField{
-  margin: 226px auto 0px auto;
+  margin: 225px auto 0px auto;
   border: none;
   border-spacing: 0;
 

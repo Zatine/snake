@@ -57,7 +57,7 @@ function gameLost(){
 	}
 	//p.innerHTML += "</p><p class='instructions'>Press any key to continue.";
 	losingScreen.appendChild(p);
-	document.onkeydown = function(event){
+	document.onkeyup = function(event){
 		gameStart();
 	}
 }
@@ -94,8 +94,9 @@ while(apple.getAttribute("id") === currentPosition || apple.getAttribute("class"
 
 apple.setAttribute("class", "apple");
 	
-document.onkeydown = function(event){
-	clearInterval(movementLoop); //remove previous movement
+document.onkeyup = function(event){
+  
+    clearInterval(movementLoop); //remove previous movement
    //MOVE UP
    if(event.keyCode === upKey) {
 	   lastKey = "up";

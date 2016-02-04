@@ -44,3 +44,4 @@ Temporary Items
 *.psd
 .sass-cache
 *.map
+.idea
